@@ -15,6 +15,7 @@ class LemonTree {
   constructor(container, options) {
     this._treeContainer = container;
     this._treeData = options.data;
+    this._treeOptions = options;
 
     this._createLemonTree();
   }
@@ -44,6 +45,12 @@ class LemonTree {
       lemonItemItems.classList.add("lemon_item-items");
       lemonItemTitle.classList.add("lemon_item-items-full");
       lemonItemTitle.onclick = this.openSub;
+
+      if (this._treeOptions.closed) {
+        lemonItemTitle.classList.add("__closed");
+        lemonItemItems.style.display = "none";
+      }
+
       for (let branchChildren of branch.children) {
         lemonItemItems.appendChild(this._createBranch(branchChildren));
       }

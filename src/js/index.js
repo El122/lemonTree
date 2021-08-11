@@ -49,6 +49,7 @@ const data = [
 
 // Опции для настройки дерева
 const options = {
+  closed: true,
   data,
 };
 
