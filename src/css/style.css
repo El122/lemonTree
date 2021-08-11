@@ -10,6 +10,18 @@
     font-family: 'Nunito', sans-serif;
 }
 
+
+/* Убрать выделение текста */
+.lemon-tree {
+-webkit-touch-callout: none; /* iOS Safari */
+-webkit-user-select: none; /* Safari */
+ -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                              supported by Chrome and Opera */
+}
+
 .lemon-tree {
     padding: 20px;
 }
@@ -29,6 +41,7 @@
     cursor: pointer;
 
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 

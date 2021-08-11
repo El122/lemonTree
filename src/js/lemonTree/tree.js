@@ -18,31 +18,39 @@ class LemonTree {
     this._treeOptions = options;
 
     this._createLemonTree();
+
+    return this;
   }
 
   // Создание HTML структуры дерева
   _createLemonTree() {
-    console.log("Creating LemonTree...");
-    this._treeContainer.classList.add("lemon-tree");
-    const lemonBody = document.createElement("div");
-    lemonBody.classList.add("lemon_body");
+    const treeContainer = this._treeContainer;
+    treeContainer.classList.add("lemon-tree");
+    const lemonBody = this._createElement("lemon_body");
+
     for (let branch of this._treeData) {
       lemonBody.appendChild(this._createBranch(branch));
     }
-    this._treeContainer.appendChild(lemonBody);
+
+    treeContainer.appendChild(lemonBody);
+  }
+
+  _setItemOptions(item, branch) {
+    item.setAttribute("data-lemon-id", branch.lemonId);
+    item.setAttribute("id", branch.id);
+
+    if (branch.class) for (let classItem of branch.class) item.classList.add(classItem);
   }
 
   // Создание ветки дерева
   _createBranch(branch) {
-    console.log("Рекурсивные страдания");
-    const lemonItem = document.createElement("div");
-    lemonItem.classList.add("lemon_item");
-    lemonItem.setAttribute("data-lemon-id", branch.id);
+    const lemonItem = this._createElement("lemon_item");
+    const lemonItemItems = this._createElement("lemon_item-items");
     const lemonItemTitle = this._createBranchTitle(branch);
-    const lemonItemItems = document.createElement("div");
+
+    this._setItemOptions(lemonItem, branch);
 
     if (branch.children) {
-      lemonItemItems.classList.add("lemon_item-items");
       lemonItemTitle.classList.add("lemon_item-items-full");
       lemonItemTitle.onclick = this.openSub;
 
@@ -63,13 +71,12 @@ class LemonTree {
   }
 
   _createBranchTitle(branch) {
-    const lemonItemTitle = document.createElement("div");
+    const lemonItemTitle = this._createElement("lemon_item-title");
     const lemonTiltleIcon = document.createElement("div");
     const lemonTiltleText = document.createElement("span");
     lemonTiltleIcon.innerHTML = folderIcon;
-    lemonItemTitle.classList.add("lemon_item-title");
     lemonTiltleText.innerText = branch.name;
-    
+
     lemonItemTitle.appendChild(lemonTiltleIcon);
     lemonItemTitle.appendChild(lemonTiltleText);
 
@@ -77,21 +84,29 @@ class LemonTree {
   }
 
   openSub(e) {
-    const itemItems =
-      e.target.parentNode.querySelector(".lemon_item-items") ||
-      e.target.parentNode.parentNode.querySelector(".lemon_item-items");
-    let itemItemsVisible = itemItems.style.display || "block";
-    let itemTitle =
-      e.target.parentNode.querySelector(".lemon_item-title") ||
-      e.target.parentNode.parentNode.querySelector(".lemon_item-title");
-    
-    if (itemItemsVisible == "block") {
+    const _findElem = (elem, selector) => {
+      return (
+        elem.parentNode.querySelector(selector) ||
+        _findElem(elem.parentNode, selector)
+      );
+    }
+
+    const itemItems = _findElem(e.target, ".lemon_item-items");
+    let itemTitle = _findElem(e.target, ".lemon_item-title");
+
+    if (itemItems.style.display == "block") {
       itemItems.style.display = "none";
       itemTitle.classList.add("__closed");
-    }
-    else {
+    } else {
       itemItems.style.display = "block";
       itemTitle.classList.remove("__closed");
     }
+  }
+
+  _createElement(elemClass) {
+    const block = document.createElement("div");
+    block.classList.add(elemClass);
+
+    return block;
   }
 }
