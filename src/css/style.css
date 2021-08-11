@@ -1,0 +1,69 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 16px;
+    box-sizing: border-box;
+
+    font-family: 'Nunito', sans-serif;
+}
+
+.lemon-tree {
+    padding: 20px;
+}
+
+.lemon_title {
+    margin: 10px 0;
+
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 600;
+}
+
+.lemon_item-title {
+    margin: 5px 0;
+    padding-left: 15px;
+
+    cursor: pointer;
+
+    display: flex;
+    gap: 10px;
+}
+
+.lemon_item-title:hover {
+    background-color: azure;
+}
+
+.lemon_item-items {
+    padding: 0 15px;
+}
+
+.lemon_item-items-empty {
+    padding-left: 35px;
+}
+
+.lemon_item-items-full:before {
+    content: "";
+    background-image: url("../img/right-arrow.svg");
+    background-size: 8px;
+    background-repeat: no-repeat;
+    background-position-y: 4px;
+    width: 10px;
+    height: 20px;
+
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.lemon_item-items-full.__closed::before {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
