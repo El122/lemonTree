@@ -9,104 +9,138 @@ const folderIcon = `
 		V84.622C468.293,73.298,459.112,64.117,447.788,64.117z"/>
 	</svg>
 `;
+const fileIcon = `
+	<svg width="16" height="16" viewBox="0 0 468.293 468.293">
+		<path style="fill:#FCF05A;" d="M376,464H40V32h224l112,112V464z"/>
+    <path style="fill:#FDBD40;" d="M424,416H88V0h224l112,112V416z"/>
+    <path style="fill:#F49E21;" d="M312,112h112L312,0V112z"/>
+      <path style="fill:#E9686A;" d="M152,352h-16c-4.418,0-8-3.582-8-8s3.582-8,8-8h16c4.418,0,8,3.582,8,8S156.418,352,152,352z"/>
+      <path style="fill:#E9686A;" d="M376,352H184c-4.418,0-8-3.582-8-8s3.582-8,8-8h192c4.418,0,8,3.582,8,8S380.418,352,376,352z"/>
+      <path style="fill:#E9686A;" d="M152,304h-16c-4.418,0-8-3.582-8-8s3.582-8,8-8h16c4.418,0,8,3.582,8,8S156.418,304,152,304z"/>
+      <path style="fill:#E9686A;" d="M376,304H184c-4.418,0-8-3.582-8-8s3.582-8,8-8h192c4.418,0,8,3.582,8,8S380.418,304,376,304z"/>
+      <path style="fill:#E9686A;" d="M152,256h-16c-4.418,0-8-3.582-8-8s3.582-8,8-8h16c4.418,0,8,3.582,8,8S156.418,256,152,256z"/>
+      <path style="fill:#E9686A;" d="M376,256H184c-4.418,0-8-3.582-8-8s3.582-8,8-8h192c4.418,0,8,3.582,8,8S380.418,256,376,256z"/>
+      <path style="fill:#E9686A;" d="M152,208h-16c-4.418,0-8-3.582-8-8s3.582-8,8-8h16c4.418,0,8,3.582,8,8S156.418,208,152,208z"/>
+      <path style="fill:#E9686A;" d="M376,208H184c-4.418,0-8-3.582-8-8s3.582-8,8-8h192c4.418,0,8,3.582,8,8S380.418,208,376,208z"/>
+      <path style="fill:#E9686A;" d="M152,160h-16c-4.418,0-8-3.582-8-8s3.582-8,8-8h16c4.418,0,8,3.582,8,8S156.418,160,152,160z"/>
+      <path style="fill:#E9686A;" d="M376,160H184c-4.418,0-8-3.582-8-8s3.582-8,8-8h192c4.418,0,8,3.582,8,8S380.418,160,376,160z"/>
+      <path style="fill:#E9686A;" d="M136,72h48v48h-48V72z"/>
+	</svg>
+`;
 
 // Класс для создания дерева проекта
 class LemonTree {
-  constructor(container, options) {
-    this._treeContainer = container;
-    this._treeData = options.data;
-    this._treeOptions = options;
+	constructor(container, options) {
+		this._treeContainer = container;
+		this._treeData = options.data;
+		this._treeOptions = options;
 
-    this._createLemonTree();
+		this._createLemonTree();
 
-    return this;
-  }
+		return this;
+	}
 
-  // Создание HTML структуры дерева
-  _createLemonTree() {
-    const treeContainer = this._treeContainer;
-    treeContainer.classList.add("lemon-tree");
-    const lemonBody = this._createElement("lemon_body");
+	_createActions(item) {
+		item.onclick = this._treeOptions?.actions?.click;
+		item.oncontextmenu = this._treeOptions?.actions?.rightClick;
+		item.onmouseover = this._treeOptions?.actions?.hover;
+	}
 
-    for (let branch of this._treeData) {
-      lemonBody.appendChild(this._createBranch(branch));
-    }
+	// Создание HTML структуры дерева
+	_createLemonTree() {
+		const treeContainer = this._treeContainer;
+		treeContainer.classList.add("lemon-tree");
+		const lemonBody = this._createElement("lemon_body");
 
-    treeContainer.appendChild(lemonBody);
-  }
+		for (let branch of this._treeData) {
+			lemonBody.appendChild(this._createBranch(branch));
+		}
 
-  _setItemOptions(item, branch) {
-    item.setAttribute("data-lemon-id", branch.lemonId);
-    item.setAttribute("id", branch.id);
+		treeContainer.appendChild(lemonBody);
+	}
 
-    if (branch.class) for (let classItem of branch.class) item.classList.add(classItem);
-  }
+	_setItemOptions(item, branch) {
+		item.setAttribute("data-lemon-id", branch.lemonId);
+		item.setAttribute("id", branch.id);
 
-  // Создание ветки дерева
-  _createBranch(branch) {
-    const lemonItem = this._createElement("lemon_item");
-    const lemonItemItems = this._createElement("lemon_item-items");
-    const lemonItemTitle = this._createBranchTitle(branch);
+		if (branch.class)
+			for (let classItem of branch.class) item.classList.add(classItem);
+	}
 
-    this._setItemOptions(lemonItem, branch);
+	// Создание ветки дерева
+	_createBranch(branch) {
+		const lemonItem = this._createElement("lemon_item");
+		const lemonItemItems = this._createElement("lemon_item-items");
+		const lemonItemTitle = this._createBranchTitle(branch);
 
-    if (branch.children) {
-      lemonItemTitle.classList.add("lemon_item-items-full");
-      lemonItemTitle.onclick = this.openSub;
+		this._setItemOptions(lemonItem, branch);
+		this._createActions(lemonItemTitle);
 
-      if (this._treeOptions.closed) {
-        lemonItemTitle.classList.add("__closed");
-        lemonItemItems.style.display = "none";
-      }
+		if (branch.children) {
+			lemonItemTitle.classList.add("lemon_item-items-full");
+			lemonItemTitle.onclick = this.openSub;
 
-      for (let branchChildren of branch.children) {
-        lemonItemItems.appendChild(this._createBranch(branchChildren));
-      }
-    } else lemonItemTitle.classList.add("lemon_item-items-empty");
+			if (this._treeOptions.closed) {
+				lemonItemTitle.classList.add("__closed");
+				lemonItemItems.style.display = "none";
+			}
 
-    lemonItem.appendChild(lemonItemTitle);
-    lemonItem.appendChild(lemonItemItems);
+			for (let branchChildren of branch.children) {
+				lemonItemItems.appendChild(this._createBranch(branchChildren));
+			}
+		} else lemonItemTitle.classList.add("lemon_item-items-empty");
 
-    return lemonItem;
-  }
+		lemonItem.appendChild(lemonItemTitle);
+		lemonItem.appendChild(lemonItemItems);
 
-  _createBranchTitle(branch) {
-    const lemonItemTitle = this._createElement("lemon_item-title");
-    const lemonTiltleIcon = document.createElement("div");
-    const lemonTiltleText = document.createElement("span");
-    lemonTiltleIcon.innerHTML = folderIcon;
-    lemonTiltleText.innerText = branch.name;
+		return lemonItem;
+	}
 
-    lemonItemTitle.appendChild(lemonTiltleIcon);
-    lemonItemTitle.appendChild(lemonTiltleText);
+	_setIcon(branch) {
+		if (branch.icon) return branch.icon;
+		if (branch.children || branch.type == "folder") return folderIcon;
+		return fileIcon;
+	}
 
-    return lemonItemTitle;
-  }
+	_createBranchTitle(branch) {
+		const lemonItemTitle = this._createElement("lemon_item-title");
+		const lemonTiltleIcon = document.createElement("div");
+		const lemonTiltleText = document.createElement("span");
 
-  openSub(e) {
-    const _findElem = (elem, selector) => {
-      return (
-        elem.parentNode.querySelector(selector) ||
-        _findElem(elem.parentNode, selector)
-      );
-    }
+		lemonTiltleIcon.innerHTML = this._setIcon(branch);
 
-    const itemItems = _findElem(e.target, ".lemon_item-items");
-    let itemTitle = _findElem(e.target, ".lemon_item-title");
+		lemonTiltleText.innerText = branch.name;
 
-    if (itemItems.style.display == "block") {
-      itemItems.style.display = "none";
-      itemTitle.classList.add("__closed");
-    } else {
-      itemItems.style.display = "block";
-      itemTitle.classList.remove("__closed");
-    }
-  }
+		lemonItemTitle.appendChild(lemonTiltleIcon);
+		lemonItemTitle.appendChild(lemonTiltleText);
 
-  _createElement(elemClass) {
-    const block = document.createElement("div");
-    block.classList.add(elemClass);
+		return lemonItemTitle;
+	}
 
-    return block;
-  }
+	openSub(e) {
+		const _findElem = (elem, selector) => {
+			return (
+				elem.parentNode.querySelector(selector) ||
+				_findElem(elem.parentNode, selector)
+			);
+		};
+
+		const itemItems = _findElem(e.target, ".lemon_item-items");
+		let itemTitle = _findElem(e.target, ".lemon_item-title");
+
+		if (itemItems.style.display == "block") {
+			itemItems.style.display = "none";
+			itemTitle.classList.add("__closed");
+		} else {
+			itemItems.style.display = "block";
+			itemTitle.classList.remove("__closed");
+		}
+	}
+
+	_createElement(elemClass) {
+		const block = document.createElement("div");
+		block.classList.add(elemClass);
+
+		return block;
+	}
 }

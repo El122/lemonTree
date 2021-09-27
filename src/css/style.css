@@ -18,12 +18,12 @@
  -khtml-user-select: none; /* Konqueror HTML */
    -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
-        user-select: none; /* Non-prefixed version, currently
-                              supported by Chrome and Opera */
+        user-select: none; /* Chrome and Opera */
 }
 
 .lemon-tree {
     padding: 20px;
+    display: flex;
 }
 
 .lemon_title {
@@ -37,6 +37,7 @@
 .lemon_item-title {
     margin: 5px 0;
     padding-left: 15px;
+    padding-right: 10px;
 
     cursor: pointer;
 
